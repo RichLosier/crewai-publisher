@@ -158,13 +158,13 @@ def main():
         
         if 6 <= current_hour < 12:
             time_context = "morning"
-            objective = "Create an engaging morning Facebook post in French for iFiveMe about networking and professional connections. Use the style: 'Et si vous...?' questions, focus on iFiveMe virtual business card benefits, include hashtags like #iFiveMe #carteaffairesvirtuelle #réseautage. SELECT an existing image from Google Drive (do NOT create new images) and send it to Make"
+            objective = "Crée du contenu inspirant et engageant pour le matin en français pour iFiveMe. Utilise le style moderne d'iFiveMe : questions engageantes comme 'Et si vous...?', langage positif comme 'Osez...', 'Découvrez...'. Focus sur les bénéfices de la carte d'affaires virtuelle, l'inspiration plutôt que les promos. Inclus des hashtags comme #iFiveMe #carteaffairesvirtuelle #réseautage #professionnelle #numérique #business #connexion #partage #entrepreneur #succès. SÉLECTIONNE une image existante de Google Drive (ne PAS créer de nouvelles images) et envoie à Make"
         elif 12 <= current_hour < 18:
             time_context = "afternoon"
-            objective = "Create an engaging afternoon Facebook post in French for iFiveMe about productivity and professional growth. Use the style: 'Et si vous...?' questions, focus on networking and business opportunities, include hashtags like #iFiveMe #productivité #business. SELECT an existing image from Google Drive (do NOT create new images) and send it to Make"
+            objective = "Crée du contenu inspirant et engageant pour l'après-midi en français pour iFiveMe. Utilise le style moderne d'iFiveMe : questions engageantes comme 'Et si vous...?', langage positif comme 'Osez l'efficacité', 'Découvrez la vraie modernité'. Focus sur le réseautage professionnel et les opportunités, l'inspiration plutôt que les promos. Inclus des hashtags comme #iFiveMe #productivité #business #réseautage #professionnelle #numérique #connexion #partage #entrepreneur #succès. SÉLECTIONNE une image existante de Google Drive (ne PAS créer de nouvelles images) et envoie à Make"
         else:
             time_context = "evening"
-            objective = "Create an engaging evening Facebook post in French for iFiveMe about strategic networking and professional development. Use the style: 'Et si vous...?' questions, focus on networking and business growth, include hashtags like #iFiveMe #networking #business. SELECT an existing image from Google Drive (do NOT create new images) and send it to Make"
+            objective = "Crée du contenu inspirant et engageant pour le soir en français pour iFiveMe. Utilise le style moderne d'iFiveMe : questions engageantes comme 'Et si vous...?', langage positif comme 'Osez...', 'Découvrez...'. Focus sur le développement professionnel et le réseautage stratégique, l'inspiration plutôt que les promos. Inclus des hashtags comme #iFiveMe #networking #business #réseautage #professionnelle #numérique #connexion #partage #entrepreneur #succès. SÉLECTIONNE une image existante de Google Drive (ne PAS créer de nouvelles images) et envoie à Make"
         
         print(f"🚀 Launching crew: {config['crew']['name']}")
         print(f"📋 Objective: {objective}")

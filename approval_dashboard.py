@@ -108,7 +108,7 @@ class ApprovalDashboard:
         
         return False
     
-    def reject_publication(self, publication_id, reason):
+    def reject_publication(self, publication_id):
         """Rejette une publication"""
         pending = self.load_pending()
         
@@ -116,7 +116,6 @@ class ApprovalDashboard:
             if pub['id'] == publication_id:
                 pub['status'] = 'rejected'
                 pub['rejected_at'] = datetime.now().isoformat()
-                pub['rejected_reason'] = reason
                 pub['rejected_by'] = 'Admin'
                 
                 self.save_pending(pending)
@@ -176,12 +175,10 @@ def approve_publication(publication_id):
     else:
         return jsonify({"success": False, "message": "Publication non trouvée"})
 
-@app.route('/reject/<publication_id>', methods=['POST'])
+@app.route('/reject/<publication_id>', methods=['GET'])
 def reject_publication(publication_id):
     """Rejette une publication"""
-    reason = request.json.get('reason', 'Aucune raison spécifiée')
-    
-    if dashboard.reject_publication(publication_id, reason):
+    if dashboard.reject_publication(publication_id):
         return jsonify({"success": True, "message": "Publication rejetée"})
     else:
         return jsonify({"success": False, "message": "Publication non trouvée"})

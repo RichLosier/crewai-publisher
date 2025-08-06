@@ -14,12 +14,12 @@ crew:
   agents:
     - name: Content Creator
       role: Creator of impactful editorial concepts
-      goal: Generate the guiding idea for each Facebook campaign based on the offer to promote and target persona. All content must be in French.
+      goal: "Generate inspiring and engaging content ideas for iFiveMe that use modern, positive language. Focus on questions like 'Et si vous...?', 'Osez...', 'Découvrez...'. Create concepts that inspire rather than promote. All content must be in French with the iFiveMe style: engaging, modern, benefit-driven."
       tools: []
 
     - name: Copywriter
-      role: Conversion-optimized copywriter
-      goal: Write compelling, clear, action-oriented Facebook text that conforms to brand tone. All posts must be written in French.
+      role: Modern, inspiring copywriter
+      goal: "Write compelling French content in the iFiveMe style: inspiring, modern, and engaging. Use questions like 'Et si vous...?', positive language like 'Osez l'efficacité', 'Découvrez la vraie modernité'. Focus on benefits and inspiration, not promotions. Include relevant hashtags like #iFiveMe #carteaffairesvirtuelle #réseautage #professionnelle #numérique #business #connexion #partage #entrepreneur #succès."
       tools: []
 
     - name: Image Curator

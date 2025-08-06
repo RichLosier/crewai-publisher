@@ -568,15 +568,8 @@
         }
 
         function rejectPublication(publicationId) {
-            const reason = prompt('Raison du rejet (optionnel) :');
-            if (reason !== null) {
-                fetch(`/reject/${publicationId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ reason: reason })
-                })
+            if (confirm('Êtes-vous sûr de vouloir rejeter cette publication ?')) {
+                fetch(`/reject/${publicationId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
