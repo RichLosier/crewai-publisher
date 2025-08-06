@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """
-Démarre le dashboard avec des publications initiales
+Génère immédiatement 10 publications pour le dashboard
 """
 
 import json
 import uuid
 from datetime import datetime
-import os
 
-def generate_initial_publications():
-    """Génère les publications initiales"""
-    print("🚀 Génération des publications initiales...")
+def generate_publications():
+    """Génère 10 publications avec le style amélioré"""
+    
+    print("🚀 GÉNÉRATION IMMÉDIATE DE PUBLICATIONS")
+    print("=" * 50)
     
     # Contenu avec le style amélioré
-    initial_content = """🌟 **Découvrez la carte de visite virtuelle iFiveMe : L'outil essentiel pour un networking captivant !** 🌟
+    content = """🌟 **Découvrez la carte de visite virtuelle iFiveMe : L'outil essentiel pour un networking captivant !** 🌟
 
 Saviez-vous que votre première impression peut se jouer en une fraction de seconde ? Et si chaque rencontre devenait une opportunité d'échanger, d'inspirer et de créer des connexions authentiques ? Avec la carte de visite virtuelle iFiveMe, transformez la façon dont vous vous présentez au monde.
 
@@ -29,42 +30,30 @@ Ne sous-estimez jamais le pouvoir d'une présentation soignée. Avec la carte de
 
 #iFiveMe #carteaffairesvirtuelle #réseautage #professionnelle #numérique #business #connexion #partage #entrepreneur #succès"""
 
-    # Créer 10 publications initiales
-    pending_publications = []
+    # Créer 10 publications
+    publications = []
     
     for i in range(10):
         publication = {
             "id": str(uuid.uuid4())[:8],
-            "content": initial_content,
+            "content": content,
             "image": "downloaded_freepik__crer-une-image-dans-un-style-3d-semiraliste-inspir__48353.jpeg",
             "status": "pending",
             "created_at": datetime.now().isoformat(),
             "agents": ["Content Creator", "Copywriter"],
-            "style": "auto_generated"
+            "style": "improved_inspiring"
         }
-        pending_publications.append(publication)
+        publications.append(publication)
+        print(f"✅ Publication {i+1}/10 créée - ID: {publication['id']}")
     
     # Sauvegarder
     with open('pending_approvals.json', 'w', encoding='utf-8') as f:
-        json.dump(pending_publications, f, ensure_ascii=False, indent=2)
+        json.dump(publications, f, ensure_ascii=False, indent=2)
     
-    print(f"✅ {len(pending_publications)} publications initiales générées")
-
-def main():
-    """Démarre le système complet"""
-    print("🎯 SYSTÈME COMPLET CREWAI PUBLISHER")
     print("=" * 50)
-    print("🚀 Génération des publications initiales")
-    print("🌐 Dashboard d'approbation")
-    print("⏰ 10 publications en attente")
+    print(f"🎯 {len(publications)} publications générées avec succès !")
+    print("🌐 Va voir ton dashboard : https://web-production-ad2cc.up.railway.app")
     print("=" * 50)
-    
-    # Générer les publications initiales
-    generate_initial_publications()
-    
-    # Démarrer le dashboard
-    print("🌐 Démarrage du dashboard...")
-    os.system("python3 approval_dashboard.py")
 
 if __name__ == "__main__":
-    main() 
+    generate_publications() 

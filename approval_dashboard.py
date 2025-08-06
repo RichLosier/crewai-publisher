@@ -157,7 +157,7 @@ class ApprovalDashboard:
     def trigger_new_generation(self):
         """Déclenche la génération d'une nouvelle publication"""
         try:
-            # Génération simple sans CrewAI pour éviter les erreurs
+            # Génération simple sans imports complexes
             import json
             import uuid
             from datetime import datetime
