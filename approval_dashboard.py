@@ -69,14 +69,12 @@ class ApprovalDashboard:
         return pending_publication['id']
     
     def approve_publication(self, publication_id):
-        """Approuve une publication et l'envoie à Make.com"""
+        """Approuve une publication et déclenche la génération d'une nouvelle"""
         pending = self.load_pending()
         publications = self.load_publications()
         
-        # Trouver la publication en attente
         for pub in pending:
             if pub['id'] == publication_id:
-                # Mettre à jour le statut
                 pub['status'] = 'approved'
                 pub['approved_at'] = datetime.now().isoformat()
                 pub['approved_by'] = 'Admin'
@@ -103,6 +101,9 @@ class ApprovalDashboard:
                 # Retirer des en attente
                 pending = [p for p in pending if p['id'] != publication_id]
                 self.save_pending(pending)
+                
+                # Déclencher la génération d'une nouvelle publication
+                self.trigger_new_generation()
                 
                 return True
         
@@ -153,6 +154,23 @@ class ApprovalDashboard:
         except Exception as e:
             print(f"❌ Erreur de connexion à Make.com: {str(e)}")
             return False
+
+    def trigger_new_generation(self):
+        """Déclenche la génération d'une nouvelle publication"""
+        try:
+            # Import du générateur
+            from auto_generator import AutoPublicationGenerator
+            
+            generator = AutoPublicationGenerator()
+            success = generator.generate_publication()
+            
+            if success:
+                print("✅ Nouvelle publication générée automatiquement")
+            else:
+                print("❌ Échec de la génération automatique")
+                
+        except Exception as e:
+            print(f"❌ Erreur lors de la génération automatique: {str(e)}")
 
 # Instance globale du dashboard
 dashboard = ApprovalDashboard()
