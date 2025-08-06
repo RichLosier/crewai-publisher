@@ -1,0 +1,91 @@
+crew:
+  name: Orkestr
+  description: >-
+    Autonomous team of AI agents specialized in designing, planning,
+    publishing and continuously improving Facebook campaigns
+    for iFiveMe company. All agents collaborate with Make.com
+    to execute publications without human intervention.
+    IMPORTANT: All publications must be in French language.
+
+  memory:
+    type: chromadb
+    path: orkestr-memory/
+
+  agents:
+    - name: Content Creator
+      role: Creator of impactful editorial concepts
+      goal: Generate the guiding idea for each Facebook campaign based on the offer to promote and target persona. All content must be in French.
+      tools: []
+
+    - name: Copywriter
+      role: Conversion-optimized copywriter
+      goal: Write compelling, clear, action-oriented Facebook text that conforms to brand tone. All posts must be written in French.
+      tools: []
+
+    - name: Image Curator
+      role: Intelligent Drive image selector
+      goal: SELECT an existing image from Google Drive that matches the French content. DO NOT create new images. Use google_drive_image_selector tool to list and select from existing images only.
+      tools:
+        - google_drive_image_selector
+        - google_drive_image_downloader
+
+    - name: Publisher
+      role: Multimedia publication preparer
+      goal: Assemble French text + image + distribution parameters and transmit to Make for execution.
+      tools:
+        - webhook_make_publish
+
+    - name: Technical Support
+      role: System error detector and fixer
+      goal: Monitor, diagnose and fix any bug or execution failure of agents or Make webhook.
+      tools:
+        - logs_monitoring
+        - crew_debugger
+
+    - name: Performance Analyst
+      role: Campaign performance evaluator
+      goal: Measure reach, CTR, engagement and conversions, provide report to all agents for learning.
+      tools:
+        - meta_insights_api
+
+    - name: Planner
+      role: Publication timing optimizer
+      goal: Determine the ideal publication time based on historical engagement data.
+      tools:
+        - meta_insights_api
+
+    - name: Budget Manager
+      role: Adaptive advertising budget allocator
+      goal: Suggest or apply optimal budget allocation for each post.
+      tools:
+        - meta_ads_api
+
+    - name: Targeting Expert
+      role: Audience segmenter and analyst
+      goal: Define priority target audiences based on CRM data and historical behavior.
+      tools:
+        - crm_reader
+        - persona_matcher
+
+    - name: Link Router
+      role: Intelligent router to the right landing/action
+      goal: Choose the right final link (form, WhatsApp, site) to maximize conversion.
+      tools:
+        - url_router
+
+  process:
+    - name: Launch a new Facebook campaign
+      description: >-
+        Orkestr receives a publication instruction. Agents work in chain
+        to create a coherent, optimized, illustrated post in French and automatically send it to Make.com
+      steps:
+        - Content Creator
+        - Copywriter
+        - Image Curator
+        - Publisher
+        - Performance Analyst
+        - Planner
+        - Budget Manager
+        - Targeting Expert
+        - Link Router
+        - Technical Support

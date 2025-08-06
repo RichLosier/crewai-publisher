@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard d'Approbation CrewAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .publication-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .publication-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .publication-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .publication-id {
+            font-size: 0.9em;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .publication-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .publication-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .publication-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .publication-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #138496;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            background: #5a6fd8;
+        }
+
+        /* Styles pour la dynamique des agents */
+        .agent-workflow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 150px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .workflow-step:hover {
+            transform: translateY(-2px);
+        }
+
+        .step-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .step-content h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .step-content p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 0.8em;
+            line-height: 1.3;
+        }
+
+        .step-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .step-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .step-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .step-status.completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .workflow-arrow {
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 0 10px;
+        }
+
+        .agent-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .agent-stats .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .agent-stats .stat-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .agent-stats .stat-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .publication-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .publication-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Dashboard d'Approbation CrewAI</h1>
+            <p>Approuvez ou rejetez les publications avant publication sur Facebook</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ pending|length }}</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ publications|length }}</div>
+                <div class="stat-label">Approuvées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ pending|selectattr('status', 'equalto', 'rejected')|list|length }}</div>
+                <div class="stat-label">Rejetées</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Dynamique des Agents -->
+            <div class="section">
+                <h2 class="section-title">🤖 Dynamique des Agents CrewAI</h2>
+                
+                <div class="agent-workflow">
+                    <div class="workflow-step">
+                        <div class="step-icon">🎯</div>
+                        <div class="step-content">
+                            <h4>Content Creator</h4>
+                            <p>Génère le concept éditorial et l'idée directrice</p>
+                            <div class="step-status active">En cours...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-icon">✍️</div>
+                        <div class="step-content">
+                            <h4>Copywriter</h4>
+                            <p>Rédige le texte engageant en français</p>
+                            <div class="step-status pending">En attente</div>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-icon">🖼️</div>
+                        <div class="step-content">
+                            <h4>Image Curator</h4>
+                            <p>Sélectionne l'image depuis Google Drive</p>
+                            <div class="step-status pending">En attente</div>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-icon">📤</div>
+                        <div class="step-content">
+                            <h4>Publication Coordinator</h4>
+                            <p>Prépare la publication finale</p>
+                            <div class="step-status pending">En attente</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Agents actifs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Sequential</div>
+                        <div class="stat-label">Processus</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">French</div>
+                        <div class="stat-label">Langue</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publications en attente -->
+            <div class="section">
+                <h2 class="section-title">📋 Publications en attente d'approbation</h2>
+                
+                <button class="refresh-btn" onclick="location.reload()">🔄 Actualiser</button>
+
+                {% if pending %}
+                    {% for pub in pending %}
+                        {% if pub.status == 'pending' %}
+                            <div class="publication-card">
+                                <div class="publication-header">
+                                    <div>
+                                        <span class="status-badge status-pending">⏳ En attente</span>
+                                        <span class="publication-id">#{{ pub.id|string|truncate(8, true, '') }}</span>
+                                    </div>
+                                    <div class="publication-date">
+                                        {{ pub.timestamp.split('T')[0] }} à {{ pub.timestamp.split('T')[1][:5] }}
+                                    </div>
+                                </div>
+
+                                <div class="publication-content">
+                                    <strong>📝 Contenu :</strong><br>
+                                    <div style="white-space: pre-wrap; line-height: 1.6; margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                                        {{ pub.publication.content }}
+                                    </div>
+                                </div>
+
+                                {% if pub.publication.image %}
+                                    <div>
+                                        <strong>🖼️ Image :</strong><br>
+                                        <img src="/static/images/{{ pub.publication.image }}" 
+                                             alt="Image de la publication" 
+                                             style="max-width: 300px; max-height: 200px; border-radius: 8px; margin: 10px 0; border: 2px solid #e0e0e0;"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <div style="display: none; font-family: monospace; font-size: 0.9em; color: #666; margin-top: 5px;">
+                                            Fichier: {{ pub.publication.image }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if pub.publication.hashtags %}
+                                    <div style="margin-top: 10px;">
+                                        <strong>🏷️ Hashtags :</strong><br>
+                                        {% for tag in pub.publication.hashtags %}
+                                            <span style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; margin: 2px; font-size: 0.8em;">{{ tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <div class="publication-actions">
+                                    <button class="btn btn-approve" onclick="approvePublication('{{ pub.id }}')">
+                                        ✅ Approuver
+                                    </button>
+                                    <button class="btn btn-reject" onclick="rejectPublication('{{ pub.id }}')">
+                                        ❌ Rejeter
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <h3>🎉 Aucune publication en attente !</h3>
+                        <p>Lancez <code>python3 main.py</code> pour créer une nouvelle publication</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Historique des publications -->
+            <div class="section">
+                <h2 class="section-title">📊 Historique des publications</h2>
+                
+                {% if publications %}
+                    {% for pub in publications %}
+                        <div class="publication-card">
+                            <div class="publication-header">
+                                <div>
+                                    <span class="status-badge status-approved">✅ Approuvée</span>
+                                    <span class="publication-id">#{{ pub.id|string|truncate(8, true, '') }}</span>
+                                </div>
+                                <div class="publication-date">
+                                    {{ pub.timestamp.split('T')[0] }} à {{ pub.timestamp.split('T')[1][:5] }}
+                                </div>
+                            </div>
+
+                            <div class="publication-content">
+                                <strong>📝 Contenu :</strong><br>
+                                <div style="white-space: pre-wrap; line-height: 1.6; margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                                    {{ pub.content }}
+                                </div>
+                            </div>
+
+                            {% if pub.image %}
+                                <div>
+                                    <strong>🖼️ Image :</strong><br>
+                                    <img src="/static/images/{{ pub.image }}" 
+                                         alt="Image de la publication" 
+                                         style="max-width: 300px; max-height: 200px; border-radius: 8px; margin: 10px 0; border: 2px solid #e0e0e0;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <div style="display: none; font-family: monospace; font-size: 0.9em; color: #666; margin-top: 5px;">
+                                        Fichier: {{ pub.image }}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if pub.approved_at %}
+                                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                                    ✅ Approuvée le {{ pub.approved_at.split('T')[0] }} à {{ pub.approved_at.split('T')[1][:5] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <h3>📝 Aucune publication approuvée</h3>
+                        <p>Les publications approuvées apparaîtront ici</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function approvePublication(publicationId) {
+            if (confirm('Êtes-vous sûr de vouloir approuver cette publication ? Elle sera envoyée à Make.com pour publication sur Facebook.')) {
+                fetch(`/approve/${publicationId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('✅ Publication approuvée et envoyée à Make.com !');
+                            location.reload();
+                        } else {
+                            alert('❌ Erreur : ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('❌ Erreur de connexion : ' + error);
+                    });
+            }
+        }
+
+        function rejectPublication(publicationId) {
+            const reason = prompt('Raison du rejet (optionnel) :');
+            if (reason !== null) {
+                fetch(`/reject/${publicationId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reason: reason })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('❌ Publication rejetée');
+                        location.reload();
+                    } else {
+                        alert('❌ Erreur : ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('❌ Erreur de connexion : ' + error);
+                });
+            }
+        }
+
+        // Actualisation automatique toutes les 30 secondes
+        setInterval(() => {
+            fetch('/api/pending')
+                .then(response => response.json())
+                .then(data => {
+                    const pendingCount = data.filter(p => p.status === 'pending').length;
+                    const statElement = document.querySelector('.stat-number');
+                    if (statElement) {
+                        statElement.textContent = pendingCount;
+                    }
+                });
+        }, 30000);
+
+        // Animation du workflow des agents
+        function simulateAgentWorkflow() {
+            const steps = document.querySelectorAll('.workflow-step');
+            let currentStep = 0;
+
+            function updateStep() {
+                // Réinitialiser tous les statuts
+                steps.forEach((step, index) => {
+                    const status = step.querySelector('.step-status');
+                    if (index < currentStep) {
+                        status.textContent = 'Terminé';
+                        status.className = 'step-status completed';
+                    } else if (index === currentStep) {
+                        status.textContent = 'En cours...';
+                        status.className = 'step-status active';
+                    } else {
+                        status.textContent = 'En attente';
+                        status.className = 'step-status pending';
+                    }
+                });
+
+                currentStep = (currentStep + 1) % (steps.length + 1);
+            }
+
+            // Démarrer l'animation
+            updateStep();
+            setInterval(updateStep, 3000); // Change toutes les 3 secondes
+        }
+
+        // Démarrer l'animation quand la page est chargée
+        document.addEventListener('DOMContentLoaded', simulateAgentWorkflow);
+    </script>
+</body>
+</html> 

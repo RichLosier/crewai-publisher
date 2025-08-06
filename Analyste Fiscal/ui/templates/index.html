@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFiveMe - Assistant Fiscal AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .search-container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .search-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .search-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .upload-zone {
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone:hover {
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .upload-zone.dragover {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtext {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .response-container {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .response-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .response-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .response-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .response-content {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .suggestion-chip {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .memory-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            color: #333;
+            max-width: 300px;
+        }
+
+        .memory-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .memory-content {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .search-title {
+                font-size: 2rem;
+            }
+            
+            .search-subtitle {
+                font-size: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="#" class="logo">🤖 iFiveMe AI</a>
+        <nav class="nav-links">
+            <a href="#memory">Mémoire</a>
+            <a href="#help">Aide</a>
+            <a href="#settings">Paramètres</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="search-container">
+            <h1 class="search-title">Assistant Fiscal AI</h1>
+            <p class="search-subtitle">Posez vos questions ou déposez vos fichiers</p>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Ex: Calculer les taxes sur 1000$..." autocomplete="off">
+                <button class="search-button" id="searchButton">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Déposez vos fichiers ici</div>
+                <div class="upload-subtext">ou cliquez pour sélectionner</div>
+                <input type="file" class="file-input" id="fileInput" multiple accept=".pdf,.csv,.xlsx,.jpg,.jpeg,.png,.txt,.docx">
+            </div>
+
+            <div class="suggestions">
+                <div class="suggestion-chip" onclick="searchQuery('Calculer les taxes sur 1000$')">
+                    💰 Calcul fiscal
+                </div>
+                <div class="suggestion-chip" onclick="searchQuery('Quelles sont les prochaines échéances?')">
+                    📅 Échéances
+                </div>
+                <div class="suggestion-chip" onclick="searchQuery('Générer un rapport mensuel')">
+                    📊 Rapport
+                </div>
+                <div class="suggestion-chip" onclick="searchQuery('Analyser les opportunités d\'optimisation')">
+                    🎯 Optimisation
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>Analyse en cours...</div>
+            </div>
+        </div>
+
+        <div class="response-container" id="responseContainer">
+            <!-- Les réponses s'afficheront ici -->
+        </div>
+    </main>
+
+    <div class="memory-indicator" id="memoryIndicator" style="display: none;">
+        <div class="memory-title">🧠 Mémoire de l'entreprise</div>
+        <div class="memory-content" id="memoryContent">
+            Chargement...
+        </div>
+    </div>
+
+    <script>
+        // Éléments DOM
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const responseContainer = document.getElementById('responseContainer');
+        const loading = document.getElementById('loading');
+        const memoryIndicator = document.getElementById('memoryIndicator');
+        const memoryContent = document.getElementById('memoryContent');
+
+        // Gestion de la recherche
+        function searchQuery(query) {
+            searchInput.value = query;
+            performSearch();
+        }
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            showLoading();
+            
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.error) {
+                    showResponse('Erreur', data.error);
+                } else {
+                    showResponse(query, data.response);
+                }
+                updateMemory();
+            })
+            .catch(error => {
+                hideLoading();
+                showResponse('Erreur', 'Erreur de connexion: ' + error.message);
+            });
+        }
+
+        // Gestion de l'upload
+        function handleFileUpload(files) {
+            Array.from(files).forEach(file => {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                showLoading();
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.error) {
+                        showResponse('Erreur Upload', data.error);
+                    } else {
+                        showResponse(`Fichier: ${data.filename}`, data.analysis);
+                    }
+                    updateMemory();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResponse('Erreur Upload', 'Erreur lors de l\'upload: ' + error.message);
+                });
+            });
+        }
+
+        // Affichage des réponses
+        function showResponse(title, content) {
+            const responseBox = document.createElement('div');
+            responseBox.className = 'response-box';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR');
+            
+            responseBox.innerHTML = `
+                <div class="response-header">
+                    <div class="response-title">${title}</div>
+                    <div class="response-time">${timeString}</div>
+                </div>
+                <div class="response-content">${content}</div>
+            `;
+            
+            responseContainer.appendChild(responseBox);
+            responseContainer.style.display = 'block';
+            responseContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Gestion du loading
+        function showLoading() {
+            loading.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+
+        // Mise à jour de la mémoire
+        function updateMemory() {
+            fetch('/memory')
+            .then(response => response.json())
+            .then(data => {
+                if (data.recent_conversations && data.recent_conversations.length > 0) {
+                    const lastConversation = data.recent_conversations[data.recent_conversations.length - 1];
+                    const date = new Date(lastConversation.timestamp).toLocaleDateString('fr-FR');
+                    
+                    memoryContent.innerHTML = `
+                        Dernière interaction: ${date}<br>
+                        Conversations: ${data.recent_conversations.length}<br>
+                        Patterns appris: ${data.learned_patterns ? data.learned_patterns.length : 0}
+                    `;
+                    memoryIndicator.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour de la mémoire:', error);
+            });
+        }
+
+        // Event listeners
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Upload zone events
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFileUpload(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFileUpload(e.target.files);
+        });
+
+        // Initialiser la mémoire au chargement
+        updateMemory();
+    </script>
+</body>
+</html> 

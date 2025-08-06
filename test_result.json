@@ -1,0 +1,10 @@
+{
+  "status": "ready",
+  "google_drive": "working",
+  "crewai": "ready",
+  "make_com": "needs_activation",
+  "next_steps": [
+    "Activer le sc\u00e9nario Make.com",
+    "Lancer python3 main.py"
+  ]
+}

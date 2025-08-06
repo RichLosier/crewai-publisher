@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MAKE_WEBHOOK_URL=${MAKE_WEBHOOK_URL}
+      - GOOGLE_DRIVE_CREDENTIALS_FILE=${GOOGLE_DRIVE_CREDENTIALS_FILE}
+      - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
+    volumes:
+      - ./static/images:/app/static/images
+      - ./publications.json:/app/publications.json
+      - ./pending_approvals.json:/app/pending_approvals.json
+    restart: unless-stopped 
